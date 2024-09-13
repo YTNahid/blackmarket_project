@@ -1,0 +1,78 @@
+/* Global */
+body {
+    background-color: #212529;
+}
+
+/* Sidebar */
+.sidebar .nav-menu a,
+.sidebar .current-user {
+    color: white;
+    opacity: 0.5;
+}
+
+.sidebar .nav-menu a.open {
+    opacity: 1;
+}
+
+.sidebar .nav-menu i {
+    padding-right: 8px;
+}
+
+.sidebar .nav-menu a:hover {
+    color: white;
+    opacity: 1;
+}
+
+/* Content */
+.index main {
+    background: linear-gradient(rgb(0, 0, 0, 0.5), rgb(0, 0, 0, 0.5)), url('../assets/bg1.jpg');
+    background-size: cover;
+    background-position: center center;
+}
+
+/* Login and Register page */
+
+.container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    width: 300px;
+    margin: auto;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+h2 {
+    margin-top: 0;
+    text-align: center;
+}
+form {
+    width: 100%;
+}
+.form-group:not(:last-child) {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-group input[type='submit'] {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.form-group input[type='submit']:hover {
+    background-color: #45a049;
+}
