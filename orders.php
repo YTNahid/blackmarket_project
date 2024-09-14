@@ -13,7 +13,12 @@ $role = $_SESSION['role'];   // Get the user's role from the session
 $username = $_SESSION['username'];   // Get the user's role from the session
 
 // Fetch all orders from the database
-$sql = $conn->query("SELECT * FROM orders ORDER BY order_date DESC");
+$sql = $conn->query("
+    SELECT orders.*, users.contact 
+    FROM orders 
+    JOIN users ON orders.email = users.email 
+    ORDER BY orders.order_date DESC
+");
 $orders = $sql->fetch_all(MYSQLI_ASSOC);
 
 // Handle order status update (Confirm/Delete)
@@ -21,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $orderId = isset($_POST['order_id']) ? (int)$_POST['order_id'] : 0; 
     $newStatus = $_POST['status']; // 'confirmed' or 'deleted'
 
-    if ($orderId && ($newStatus === 'confirmed' || $newStatus === 'deleted')) {
+    if ($orderId && ($newStatus === 'confirmed' || $newStatus === 'canceled')) {
         // Prepare the update statement
         $updateSql = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
         $updateSql->bind_param("si", $newStatus, $orderId);
@@ -86,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <?php if ($role === 'admin'): ?>
                         <li><a href="./orders.php" class="open"><i class="fa-solid fa-bag-shopping"></i> Orders</a></li>
+                        <li><a href="./users.php"><i class="fa-solid fa-users pr-0"></i>Users</a></li>
                         <li><a href="./add_product.php"><i class="fa-solid fa-plus"></i> Add Product</a></li>
                     <?php endif; ?>
 
@@ -110,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th class="border px-4 py-2">ID</th>
                     <th class="border px-4 py-2">Email</th>
                     <th class="border px-4 py-2">Date</th>
+                    <th class="border px-4 py-2">Contact</th>
                     <th class="border px-4 py-2">Total</th>
                     <th class="border px-4 py-2">Items</th>
                     <th class="border px-4 py-2">Status</th>
@@ -126,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo '<td class="border px-4 py-2">' . htmlspecialchars($order['id']) . '</td>';
                     echo '<td class="border px-4 py-2">' . htmlspecialchars($order['email']) . '</td>';
                     echo '<td class="border px-4 py-2">' . htmlspecialchars($order['order_date']) . '</td>';
+                    echo '<td class="border px-4 py-2">' . htmlspecialchars($order['contact']) . '</td>';
                     echo '<td class="border px-4 py-2">$' . htmlspecialchars($order['total']) . '</td>';
                     
                     // Decode the JSON in the 'items' column
@@ -184,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     document.getElementById(`status-${orderId}`).innerHTML = 
                         status === 'confirmed' 
                         ? '<span class="text-green-500">Confirmed</span>' 
-                        : '<span class="text-red-500">Deleted</span>';
+                        : '<span class="text-red-500">Canceled</span>';
                     document.getElementById(`action-${orderId}`).innerHTML = '';
                 } else {
                     alert('Error updating order status.');

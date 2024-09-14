@@ -77,6 +77,8 @@ $conn->close();
                     <?php if ($role === 'admin'): ?>
                         <!-- Only show Orders for admins -->
                         <li><a href="./orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a></li>
+                        <li><a href="./users.php"><i class="fa-solid fa-users pr-0"></i>Users</a></li>
+                        <li><a href="./add_product.php"><i class="fa-solid fa-plus"></i> Add Product</a></li>
                     <?php endif; ?>
 
                     <li class="border-t pt-4 mt-[50px]"><a href="./profile.php" class="open"><i class="fa-solid fa-user"></i> Profile</a></li>

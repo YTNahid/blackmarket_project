@@ -89,6 +89,7 @@ $conn->close();
 
                     <?php if ($role === 'admin'): ?>
                         <li><a href="./orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a></li>
+                        <li><a href="./users.php"><i class="fa-solid fa-users pr-0"></i>Users</a></li>
                         <li><a href="./add_product.php"><i class="fa-solid fa-plus"></i> Add Product</a></li>
                     <?php endif; ?>
 
@@ -122,8 +123,9 @@ $conn->close();
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     <?php foreach ($products as $product): ?>
                         <div class="bg-bg-color shadow-md rounded-lg overflow-hidden">
-                            <img src="./assets/<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" class="w-full h-48 object-cover">
+                            <img src="./assets/<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" class="w-full h-48 object-contain hover:scale-125">
                             <div class="p-4">
+                                <p class="text-sm text-gray-400 mb-2">added by <?php echo htmlspecialchars($product['added_by']); ?></p> <!-- Display added_by -->
                                 <h3 class="text-xl font-semibold mb-2 text-white"><?php echo htmlspecialchars($product['name']); ?></h3>
                                 <div class="flex justify-between items-center">
                                     <span class="text-lg font-bold text-white">$<?php echo number_format($product['price'], 2); ?></span>

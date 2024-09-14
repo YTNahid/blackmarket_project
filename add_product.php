@@ -2,11 +2,6 @@
 // Start the session
 session_start();
 
-// Debugging: Print session values to ensure they are set correctly
-// echo '<pre>';
-// print_r($_SESSION);
-// echo '</pre>';
-
 // Check if the user is logged in and is an admin
 if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
@@ -20,10 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = $_POST['price'];
     $image = $_FILES['image']['name'];
     $target = './assets/' . basename($image);
+    $added_by = $_SESSION['username']; // Get the username from the session
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-        $sql = $conn->prepare("INSERT INTO products (name, image, price) VALUES (?, ?, ?)");
-        $sql->bind_param("ssd", $name, $image, $price);
+        // Insert product details along with the username (added_by)
+        $sql = $conn->prepare("INSERT INTO products (name, image, price, added_by) VALUES (?, ?, ?, ?)");
+        $sql->bind_param("ssds", $name, $image, $price, $added_by);
         if ($sql->execute()) {
             echo "<p>Product added successfully.</p>";
         } else {
