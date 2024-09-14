@@ -32,6 +32,7 @@ $result = $sql->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order History</title>
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 
     <!-- Connect CSS -->
     <link rel="stylesheet" href="./css/global-style.css">

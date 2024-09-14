@@ -125,7 +125,10 @@ $conn->close();
                         <div class="bg-bg-color shadow-md rounded-lg overflow-hidden">
                             <img src="./assets/<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" class="w-full h-48 object-contain hover:scale-125">
                             <div class="p-4">
-                                <p class="text-sm text-gray-400 mb-2">added by <?php echo htmlspecialchars($product['added_by']); ?></p> <!-- Display added_by -->
+                                <?php if ($role === 'admin'): ?>
+                                    <p class="text-sm text-gray-400 mb-2">added by <?php echo htmlspecialchars($product['added_by']); ?></p> <!-- Display added_by -->
+                                <?php endif; ?>
+                                
                                 <h3 class="text-xl font-semibold mb-2 text-white"><?php echo htmlspecialchars($product['name']); ?></h3>
                                 <div class="flex justify-between items-center">
                                     <span class="text-lg font-bold text-white">$<?php echo number_format($product['price'], 2); ?></span>
