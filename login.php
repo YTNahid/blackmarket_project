@@ -1,8 +1,16 @@
 <?php 
+
 include 'connect.php';
+
 
 // Start the session
 session_start();
+
+// Check if the user is logged in
+if (isset($_SESSION['email'])) {
+    header("Location: dashboard.php");
+    exit();
+}
 
 // Login
 if (isset($_POST['login'])) {
@@ -54,7 +62,7 @@ $conn->close();
 </head>
 <body class="login">
     <div class="container">
-        <h2>Registration Form</h2>
+        <h2>Login</h2>
         <form action="login.php" method="post">
             <div class="form-group">
                 <label for="email">Email:</label>

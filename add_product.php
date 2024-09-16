@@ -16,16 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image = $_FILES['image']['name'];
     $target = './assets/' . basename($image);
     $added_by = $_SESSION['username']; // Get the username from the session
+    $type = $_POST['type']; // Get the weapon type from the form
 
+    // Check if image is uploaded successfully
     if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-        // Insert product details along with the username (added_by)
-        $sql = $conn->prepare("INSERT INTO products (name, image, price, added_by) VALUES (?, ?, ?, ?)");
-        $sql->bind_param("ssds", $name, $image, $price, $added_by);
+        // Insert product details including the weapon type and the username (added_by)
+        $sql = $conn->prepare("INSERT INTO products (name, image, price, added_by, type) VALUES (?, ?, ?, ?, ?)");
+        $sql->bind_param("ssdss", $name, $image, $price, $added_by, $type);
+        
         if ($sql->execute()) {
             echo "<p>Product added successfully.</p>";
         } else {
             echo "<p>Error: " . $sql->error . "</p>";
         }
+
         $sql->close();
     } else {
         echo "<p>Failed to upload image.</p>";
@@ -60,6 +64,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="price">Product Price:</label>
                 <input type="number" id="price" name="price" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Weapon Type</label>
+                <select name="type" id="type" required>
+                    <option value="ar">AR</option>
+                    <option value="dmr">DMR</option>
+                    <option value="smg">SMG</option>
+                    <option value="sr">SG</option>
+                    <option value="hg">HG</option>
+                    <option value="melee">Melee</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Add Product">

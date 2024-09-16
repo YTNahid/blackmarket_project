@@ -37,14 +37,22 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Dashboard</title>
+    <title>My Profile</title>
     <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
+
+    <!-- Connect CSS -->
     <link rel="stylesheet" href="./css/global-style.css">
     <link rel="stylesheet" href="./css/style.css">
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/fa69f7130e.js" crossorigin="anonymous"></script>
+
+    <!-- Optional: Tailwind custom config -->
     <script>
         tailwind.config = {
             theme: {
@@ -68,20 +76,33 @@ $conn->close();
         .cart-drawer-open {
             transform: translateX(0%);
         }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-btn.active {
+            background-color: white;
+            color: black; 
+        }
     </style>
 </head>
 <body class="dashboard bg-black">
+    <!-- Sidebar -->
     <header class="column sidebar bg-bg-color w-72 h-screen justify-between fixed">
         <div class="column">
             <p class="text-white opacity-25">Menu</p>
             <nav>
                 <ul class="nav-menu space-y-3">
-                    <li class=""><a href="./dashboard.php" class="open"><i class="fa-solid fa-house"></i>Dashboard</a></li>
+                    <li><a href="./dashboard.php" class="open"><i class="fa-solid fa-house"></i>Dashboard</a></li>
                     <?php if ($role !== 'admin'): ?>
                         <li>
                             <a href="#" id="view-cart-btn" class="flex items-center">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                View Cart 
+                                <i class="fa-solid fa-cart-shopping"></i>View Cart
                                 <div id="cart-count" class="count rounded-full ml-3 bg-red-600 flex items-center justify-center h-5 w-5">0</div>
                             </a>
                         </li>
@@ -107,6 +128,7 @@ $conn->close();
         </div>
     </header>
 
+    <!-- Cart Drawer -->
     <div id="cart-drawer" class="cart-drawer fixed right-0 top-0 h-full w-80 bg-gray-800 text-white p-6 cart-drawer-closed">
         <h2 class="text-2xl font-bold mb-4">Shopping Cart</h2>
         <ul id="cart-items" class="space-y-4"></ul>
@@ -117,19 +139,32 @@ $conn->close();
         <button id="close-cart-btn" class="bg-red-600 text-white px-4 py-2 mt-6 rounded">Close Cart</button>
     </div>
 
+    <!-- Main Content -->
     <main class="content ml-72 min-h-screen">
         <section class="section px-20 py-11">
             <div class="column">
                 <h1 class="text-white text-5xl mb-[30px] font-bold">SHOP</h1>
+
+                <!-- Tabs -->
+                <div class="tabs mb-8">
+                    <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="ar">ASSAULT RIFLE</button>
+                    <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="dmr">DMR</button>
+                    <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="smg">SMG</button>
+                    <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="sr">SHOTGUN</button>
+                    <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="hg">HANDGUN</button>
+                    <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="melee">MELEE</button>
+                </div>
+
+                <!-- Product Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     <?php foreach ($products as $product): ?>
-                        <div class="bg-bg-color shadow-md rounded-lg overflow-hidden">
+                        <div class="product-item tab-content <?php echo htmlspecialchars($product['type']); ?> bg-bg-color shadow-md rounded-lg overflow-hidden">
                             <img src="./assets/<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" class="w-full h-48 object-contain hover:scale-125">
                             <div class="p-4">
                                 <?php if ($role === 'admin'): ?>
-                                    <p class="text-sm text-gray-400 mb-2">added by <?php echo htmlspecialchars($product['added_by']); ?></p> <!-- Display added_by -->
+                                    <p class="text-sm text-gray-400 mb-2">added by <?php echo htmlspecialchars($product['added_by']); ?></p>
                                 <?php endif; ?>
-                                
+
                                 <h3 class="text-xl font-semibold mb-2 text-white"><?php echo htmlspecialchars($product['name']); ?></h3>
                                 <div class="flex justify-between items-center">
                                     <span class="text-lg font-bold text-white">$<?php echo number_format($product['price'], 2); ?></span>
@@ -146,6 +181,35 @@ $conn->close();
             </div>
         </section>
     </main>
+
+    <!-- JavaScript to handle tab switching -->
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const selectedTab = button.getAttribute('data-tab');
+
+                // Remove 'active' class from all buttons
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Hide all products
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add 'active' class to the clicked button
+                button.classList.add('active');
+
+                // Show products matching the selected tab
+                document.querySelectorAll(`.${selectedTab}`).forEach(product => {
+                    product.classList.add('active');
+                });
+            });
+        });
+
+        // Trigger the first tab on page load
+        document.querySelector('.tab-btn').click();
+    </script>
 
     <script src="./js/script.js"></script>
 </body>

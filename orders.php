@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // Check if the JSON was successfully decoded
                     if (is_array($items)) {
-                        echo '<td class="border px-4 py-2">';
+                        echo '<td class="border px-4 pt-8 pb-2">';
                         foreach ($items as $item) {
                             echo 'Name: ' . htmlspecialchars($item['name']) . '<br>';
                             echo 'Price: $' . htmlspecialchars($item['price']) . '<br>';
