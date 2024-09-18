@@ -7,6 +7,10 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+$email = $_SESSION['email']; // Get the user's email from the session
+$role = $_SESSION['role'];   // Get the user's role from the session
+$username = $_SESSION['username'];   // Get the user's role from the session
+
 // Handle Contact Number Change
 if (isset($_POST['change_number'])) {
     $new_number = $_POST['new_number'];
@@ -37,29 +41,43 @@ $conn->close();
 ?>
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Change Contact Number</title>
-    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="./css/style.css">
+    <?php
+    include './templates/head.php';
+    ?>
 </head>
-<body>
-    <div class="container">
-        <h2>Change Contact Number</h2>
-        <form action="change_number.php" method="post">
-            <div class="form-group">
-                <label for="new_number">New Contact Number:</label>
-                <input type="text" id="new_number" name="new_number" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Change Number" name="change_number">
-            </div>
-        </form>
-        <a href="dashboard.php"><button>Go Back</button></a>
-    </div>
+
+<body class="dashboard bg-black">
+    <?php
+    // Header
+    include './templates/header.php';
+
+    // Cart Drawer
+    include './templates/cart_drawer.php';
+    ?>
+
+    <main class="content ml-72 pt-10 min-h-screen">
+        <div class="max-w-[400px] mx-auto bg-bg-color p-10 rounded-lg">
+            <h2 class="text-2xl text-white font-bold mb-5">Change Number</h2>
+
+            <form action="./change_number.php" method="post">
+                <div class="mb-4">
+                    <label class="block text-white" for="new_number">New Contact Number:</label>
+                    <input class="w-full p-2 bg-transparent border mt-2 text-white rounded" type="text" id="new_number" name="new_number" required>
+                </div>
+                <div class="mb-4">
+                    <input  type="submit" value="Change Number" name="change_number" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800 cursor-pointer w-full mb-5"> 
+                </div>
+            </form>
+            <a href="dashboard.php" class="bg-white text-black px-4 py-2 rounded hover:bg-black hover:text-white"><button>Go Back</button></a>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="./js/script.js"></script>
 </body>
 </html>
+

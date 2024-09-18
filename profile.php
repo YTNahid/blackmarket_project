@@ -34,68 +34,32 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
-    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
-
-    <!-- Connect CSS -->
-    <link rel="stylesheet" href="./css/global-style.css">
-    <link rel="stylesheet" href="./css/style.css">
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/fa69f7130e.js" crossorigin="anonymous"></script>
-
-    <!-- Optional: Tailwind custom config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "bg-color": '#212529',
-                    }
-                }
-            }
-        }
-    </script>
+    <?php
+    include './templates/head.php';
+    ?>
 </head>
+
 <body class="bg-black min-h-screen text-white">
-     <!-- Header -->
-     <header class="column sidebar bg-bg-color w-72 h-screen justify-between fixed">
-        <div class="column">
-            <p class="text-white opacity-25">Menu</p>
-            <nav>
-                <ul class="nav-menu space-y-3">
-                    <li class=""><a href="./dashboard.php" class=""><i class="fa-solid fa-house"></i>Dashboard</a></li>
-                    <?php if ($role !== 'admin'): ?>
-                        <!-- Only show Add to Cart and Order History for non-admins -->
-                        <li><a href="./order_history.php"><i class="fa-solid fa-bag-shopping"></i> Order History</a></li>
-                    <?php endif; ?>
+    <?php
+    // Header
+    include './templates/header.php';
 
-                    <?php if ($role === 'admin'): ?>
-                        <!-- Only show Orders for admins -->
-                        <li><a href="./orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a></li>
-                        <li><a href="./users.php"><i class="fa-solid fa-users pr-0"></i>Users</a></li>
-                        <li><a href="./add_product.php"><i class="fa-solid fa-plus"></i> Add Product</a></li>
-                    <?php endif; ?>
+    // Cart Drawer
+    include './templates/cart_drawer.php';
+    ?>
 
-                    <li class="border-t pt-4 mt-[50px]"><a href="./profile.php" class="open"><i class="fa-solid fa-user"></i> Profile</a></li>
-                    <li class=""><a href="./change_pass.php"><i class="fa-solid fa-unlock-keyhole"></i> Change Password</a></li>
-                    <li class=""><a href="./change_number.php"><i class="fa-solid fa-phone-volume"></i> Change Number</a></li>
-                    <li><a href="./logout.php"><i class="fa-solid fa-right-to-bracket"></i> Logout</a></li>
-                </ul>
-            </nav>
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="cart-drawer fixed right-0 top-0 h-full w-80 bg-gray-800 text-white p-6 cart-drawer-closed z-50">
+        <h2 class="text-2xl font-bold mb-4">Shopping Cart</h2>
+        <ul id="cart-items" class="space-y-4"></ul>
+        <div id="cart-summary" class="mt-4">
+            <h3>Total: $<span id="cart-total">0.00</span></h3>
+            <button id="order-btn" class="bg-green-600 text-white px-4 py-2 mt-6 rounded">Place Order</button>
         </div>
-        <div class="column current-user bg-[#343a40] gap-2">
-            <p>Logged In as:</p>
-            <p><?php echo $username . " (" . $role . ")"; ?></p>
-        </div>
-    </header>
+        <button id="close-cart-btn" class="bg-red-600 text-white px-4 py-2 mt-6 rounded">Close Cart</button>
+    </div>
 
-    <main class="content ml-72 min-h-screen">
+    <main class="content ml-72 pt-10 min-h-screen">
         <div class="max-w-md mx-auto bg-black rounded-lg shadow-md overflow-hidden md:max-w-2xl">
             <div class="p-6 bg-bg-color">
                 <h2 class="text-2xl font-bold mb-6 text-white">Profile Details</h2>
@@ -126,5 +90,7 @@ $conn->close();
             </div>
         </div>
     </main>
+
+    <script src="./js/script.js"></script>
 </body>
 </html>

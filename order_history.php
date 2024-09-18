@@ -29,64 +29,19 @@ $result = $sql->get_result();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order History</title>
-    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
-
-    <!-- Connect CSS -->
-    <link rel="stylesheet" href="./css/global-style.css">
-    <link rel="stylesheet" href="./css/style.css">
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/fa69f7130e.js" crossorigin="anonymous"></script>
-
-    <!-- Optional: Tailwind custom config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        "bg-color": '#212529',
-                    }
-                }
-            }
-        }
-    </script>
+    <?php
+    include './templates/head.php';
+    ?>
 </head>
+
 <body class="bg-black min-h-screen text-white">
-    <!-- Header -->
-    <header class="column sidebar bg-bg-color w-72 h-screen justify-between fixed">
-        <div class="column">
-            <p class="text-white opacity-25">Menu</p>
-            <nav>
-                <ul class="nav-menu space-y-3">
-                    <li><a href="./dashboard.php"><i class="fa-solid fa-house"></i>Dashboard</a></li>
-                    <?php if ($role !== 'admin'): ?>
-                        <!-- Only show Order History for non-admins -->
-                        <li><a href="./order_history.php" class="open"><i class="fa-solid fa-bag-shopping"></i> Order History</a></li>
-                    <?php endif; ?>
+    <?php
+    // Header
+    include './templates/header.php';
 
-                    <?php if ($role === 'admin'): ?>
-                        <!-- Only show Orders for admins -->
-                        <li><a href="./orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a></li>
-                    <?php endif; ?>
-
-                    <li class="border-t pt-4 mt-[50px]"><a href="./profile.php"><i class="fa-solid fa-user"></i> Profile</a></li>
-                    <li><a href="./change_pass.php"><i class="fa-solid fa-unlock-keyhole"></i> Change Password</a></li>
-                    <li><a href="./change_number.php"><i class="fa-solid fa-phone-volume"></i> Change Number</a></li>
-                    <li><a href="./logout.php"><i class="fa-solid fa-right-to-bracket"></i> Logout</a></li>
-                </ul>
-            </nav>
-        </div>
-        <div class="column current-user bg-[#343a40] gap-2">
-            <p>Logged In as:</p>
-            <p><?php echo $username . " (" . $role . ")"; ?></p>
-        </div>
-    </header>
+    // Cart Drawer
+    include './templates/cart_drawer.php';
+    ?>
 
     <main class="content ml-72 min-h-screen">
         <section class="section px-20 py-11">

@@ -10,7 +10,12 @@ body {
     opacity: 0.5;
 }
 
-.sidebar .nav-menu a.open {
+/* .sidebar .nav-menu a {
+    display: flex;
+    align-items: center;
+} */
+
+.sidebar .nav-menu a.active {
     opacity: 1;
 }
 
@@ -75,4 +80,34 @@ form {
 }
 .form-group input[type='submit']:hover {
     background-color: #45a049;
+}
+
+/* Dashboard */
+/* Edit Form */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+/* Cart */
+.cart-drawer {
+    transition: transform 0.3s ease-in-out;
+}
+
+.cart-drawer-closed {
+    transform: translateX(100%);
+    visibility: hidden;
+    z-index: -1;
+}
+
+.cart-drawer-open {
+    transform: translateX(0%);
+    z-index: 100;
 }

@@ -40,12 +40,15 @@ function updateCartDrawer() {
         li.classList.add('flex', 'flex-col', 'items-start', 'gap-2', 'border-b', 'pb-5');
         li.innerHTML = `
             <div class="flex flex-col gap-2">
-                <p>${item.name} - $${item.price}</p>
+                <p>${item.name} - $${item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <input type="number" value="${
                     item.quantity
                 }" min="1" class="quantity-input bg-gray-600 text-center" onchange="changeQuantity(${index}, this.value)">
             </div>
-            <p class="text-white">$<span>${(item.price * item.quantity).toFixed(2)}</span></p>
+            <p class="text-white">$<span>${(item.price * item.quantity).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            })}</span></p>
             <button onclick="removeFromCart(${index})" class="bg-red-600 text-white px-2 py-1 rounded">Remove</button>
         `;
         cartItemsElement.appendChild(li);
@@ -57,7 +60,7 @@ function updateCartDrawer() {
 // Update total price of the cart
 function updateCartTotal() {
     let total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    cartTotalElement.innerText = total.toFixed(2);
+    cartTotalElement.innerText = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 // Change quantity of a specific item
@@ -78,11 +81,22 @@ document.getElementById('view-cart-btn').addEventListener('click', function () {
     cartDrawerElement.classList.add('cart-drawer-open');
 });
 
+if (document.getElementById('view-cart-btn')) {
+}
+
 // Close cart drawer
 document.getElementById('close-cart-btn').addEventListener('click', function () {
     cartDrawerElement.classList.remove('cart-drawer-open');
     cartDrawerElement.classList.add('cart-drawer-closed');
 });
+
+// Close cart drawer when clicking outside
+// document.addEventListener('click', function (event) {
+//     if (!cartDrawerElement.contains(event.target) && !event.target.closest('#view-cart-btn')) {
+//         cartDrawerElement.classList.remove('cart-drawer-open');
+//         cartDrawerElement.classList.add('cart-drawer-closed');
+//     }
+// });
 
 // Initialize cart on page load
 updateCart();

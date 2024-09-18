@@ -1,5 +1,5 @@
 <?php
-// Start the session
+// Start session
 session_start();
 
 // Check if the user is logged in and is an admin
@@ -8,79 +8,36 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-include 'connect.php';
+include 'connect.php'; // Database connection
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get form input values
     $name = $_POST['name'];
     $price = $_POST['price'];
-    $image = $_FILES['image']['name'];
-    $target = './assets/' . basename($image);
+    $image = $_FILES['image']['name']; // File name
+    $target = './assets/' . basename($image); // Upload path
     $added_by = $_SESSION['username']; // Get the username from the session
     $type = $_POST['type']; // Get the weapon type from the form
 
-    // Check if image is uploaded successfully
+    // Move uploaded file to the target directory
     if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-        // Insert product details including the weapon type and the username (added_by)
-        $sql = $conn->prepare("INSERT INTO products (name, image, price, added_by, type) VALUES (?, ?, ?, ?, ?)");
-        $sql->bind_param("ssdss", $name, $image, $price, $added_by, $type);
-        
-        if ($sql->execute()) {
-            echo "<p>Product added successfully.</p>";
+        // Prepare SQL statement to insert product data
+        $stmt = $conn->prepare("INSERT INTO products (name, image, price, added_by, type) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssdss", $name, $image, $price, $added_by, $type);
+
+        // Execute query and check for success
+        if ($stmt->execute()) {
+            // If successful, redirect to the dashboard or another success page
+            header("Location: dashboard.php?message=Product+added+successfully");
         } else {
-            echo "<p>Error: " . $sql->error . "</p>";
+            // On failure, show error message
+            echo "Error: " . $stmt->error;
         }
 
-        $sql->close();
+        $stmt->close(); // Close the statement
     } else {
-        echo "<p>Failed to upload image.</p>";
+        echo "Failed to upload image.";
     }
 
-    $conn->close();
+    $conn->close(); // Close the database connection
 }
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product</title>
-    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="./css/global-style.css">
-    <link rel="stylesheet" href="./css/style.css">
-</head>
-<body class="add-product">
-    <div class="container">
-        <h2>Add Product</h2>
-        <form action="add_product.php" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="name">Product Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="image">Product Image:</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-            </div>
-            <div class="form-group">
-                <label for="price">Product Price:</label>
-                <input type="number" id="price" name="price" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label for="type">Weapon Type</label>
-                <select name="type" id="type" required>
-                    <option value="ar">AR</option>
-                    <option value="dmr">DMR</option>
-                    <option value="smg">SMG</option>
-                    <option value="sr">SG</option>
-                    <option value="hg">HG</option>
-                    <option value="melee">Melee</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Add Product">
-            </div>
-        </form>
-        <a href="dashboard.php"><button>Back to Dashboard</button></a>
-    </div>
-</body>
-</html>
