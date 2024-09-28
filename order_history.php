@@ -96,7 +96,10 @@ $result = $sql->get_result();
                     <p class="text-white">No orders found.</p>
                 <?php endif; ?>
             </div>
+            
         </section>
+        
+        
     </main>
 
     <script src="./js/script.js"></script>

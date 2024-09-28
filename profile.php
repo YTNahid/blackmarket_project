@@ -46,6 +46,9 @@ $conn->close();
 
     // Cart Drawer
     include './templates/cart_drawer.php';
+
+    //Hidden Add Product Modal 
+    include './templates/add_product_modal.php';
     ?>
 
     <!-- Cart Drawer -->

@@ -64,9 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Cart Drawer
     include './templates/cart_drawer.php';
+
+    //Hidden Add Product Modal 
+    include './templates/add_product_modal.php';
     ?>
 
+
     <main class="content ml-72 min-h-screen p-10">
+
         <h1 class="text-white text-3xl font-bold mb-6">Orders</h1>
         <table class="table-auto w-full bg-transparent text-white text-center border border-gray-700">
             <thead>

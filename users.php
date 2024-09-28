@@ -4,34 +4,29 @@ include 'connect.php';
 
 // Check if the user is logged in and is an admin
 if (!isset($_SESSION['email']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: login.php"); // Redirect to login page if not logged in or not an admin
+    header("Location: login.php");
     exit();
 }
 
-$email = $_SESSION['email']; // Get the user's email from the session
-$role = $_SESSION['role'];   // Get the user's role from the session
-$username = $_SESSION['username'];   // Get the user's role from the session
+$email = $_SESSION['email'];
+$role = $_SESSION['role'];
+$username = $_SESSION['username'];
 
-
-// Fetch all users from the database in ascending order by id
+// Fetch all users from the database
 $sql = $conn->query("SELECT id, email, username, contact, role FROM users ORDER BY id ASC");
 $users = $sql->fetch_all(MYSQLI_ASSOC);
 
-// Check if the AJAX request to change the password was made
+// Handle AJAX request to change password
 if (isset($_POST['user_id']) && isset($_POST['new_password'])) {
     $userId = intval($_POST['user_id']);
     $newPassword = $_POST['new_password'];
 
-    // Check if the password is not empty
     if (empty($newPassword)) {
         echo json_encode(['success' => false, 'message' => 'Password cannot be empty.']);
         exit();
     }
 
-    // Hash the new password
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-
-    // Update the user's password in the database
     $updateSql = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
     $updateSql->bind_param("si", $hashedPassword, $userId);
 
@@ -42,11 +37,29 @@ if (isset($_POST['user_id']) && isset($_POST['new_password'])) {
     }
 
     $updateSql->close();
-    exit(); // End script after processing AJAX request
+    exit();
+}
+
+// Handle AJAX request to delete user
+if (isset($_POST['delete_user_id'])) {
+    $userIdToDelete = intval($_POST['delete_user_id']);
+
+    $deleteSql = $conn->prepare("DELETE FROM users WHERE id = ?");
+    $deleteSql->bind_param("i", $userIdToDelete);
+
+    if ($deleteSql->execute()) {
+        echo json_encode(['success' => true, 'message' => 'User deleted successfully.']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Error deleting user.']);
+    }
+
+    $deleteSql->close();
+    exit();
 }
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -63,6 +76,9 @@ $conn->close();
 
     // Cart Drawer
     include './templates/cart_drawer.php';
+
+    //Hidden Add Product Modal 
+    include './templates/add_product_modal.php';
     ?>
 
     <main class="content ml-72 min-h-screen">
@@ -79,6 +95,7 @@ $conn->close();
                                 <th class="border px-4 py-2">Contact</th>
                                 <th class="border px-4 py-2">Role</th>
                                 <th class="border px-4 py-2">Change Password</th>
+                                <th class="border px-4 py-2">Delete User</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,12 +109,21 @@ $conn->close();
                                     <td class="border px-4 py-2">
                                         <?php if ($user['role'] !== 'admin'): ?>
                                             <input type="password" id="new-password-<?php echo $user['id']; ?>" placeholder="New Password" class="text-black px-2 py-1 rounded">
-                                            <button onclick="changePassword(<?php echo $user['id']; ?>)" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">Change Password</button>
+                                            <button onclick="changePassword(<?php echo $user['id']; ?>)" class="bg-blue-500 text-white px-4 py-2 rounded ml-2 hover:bg-blue-600">Change Password</button>
                                         <?php else: ?>
                                             <!-- Hidden for admin users -->
                                             <p class="text-gray-400">Not changeable</p>
                                         <?php endif; ?>
                                     </td>
+                                    <td class="border px-4 py-2">
+                                        <?php if ($user['role'] !== 'admin'): ?>
+                                            <button onclick="deleteUser(<?php echo $user['id']; ?>)" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded ml-2">Delete</button>
+                                        <?php else: ?>
+                                            <!-- Hidden for admin users -->
+                                            <p class="text-gray-400">Not deletable</p>
+                                        <?php endif; ?>
+                                    </td>
+
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -139,6 +165,34 @@ $conn->close();
                 alert("An error occurred.");
             });
         }
+
+        function deleteUser(userId) {
+            if (confirm("Are you sure you want to delete this user?")) {
+                // Send the delete request to the server via AJAX
+                fetch('', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `delete_user_id=${userId}`
+                })
+                .then(response => response.json()) // Directly parse the response as JSON
+                .then(data => {
+                    if (data.success) {
+                        alert("User deleted successfully!");
+                        location.reload(); // Optionally, reload the page to update the list of users
+                    } else {
+                        alert("Failed to delete user: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Log error for debugging
+                    alert("An error occurred.");
+                });
+            }
+        }
+
+
     </script>
 
     <script src="./js/script.js"></script>

@@ -57,6 +57,9 @@ $conn->close();
 
     // Cart Drawer
     include './templates/cart_drawer.php';
+
+    //Hidden Add Product Modal 
+    include './templates/add_product_modal.php';
     ?>
 
     <main class="content ml-72 pt-10 min-h-screen">
