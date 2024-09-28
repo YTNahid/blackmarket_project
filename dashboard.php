@@ -152,28 +152,39 @@ $conn->close();
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
 
+        // Function to activate a tab
+        function activateTab(selectedTab) {
+            // Remove 'active' class from all buttons
+            tabButtons.forEach((btn) => btn.classList.remove('active'));
+
+            // Hide all products
+            tabContents.forEach((content) => content.classList.remove('active'));
+
+            // Add 'active' class to the corresponding tab
+            document.querySelector(`[data-tab="${selectedTab}"]`).classList.add('active');
+            document.querySelectorAll(`.${selectedTab}`).forEach((product) => {
+                product.classList.add('active');
+            });
+        }
+
+        // Attach event listeners to all tab buttons
         tabButtons.forEach((button) => {
             button.addEventListener('click', () => {
                 const selectedTab = button.getAttribute('data-tab');
 
-                // Remove 'active' class from all buttons
-                tabButtons.forEach((btn) => btn.classList.remove('active'));
+                // Save the selected tab to localStorage
+                localStorage.setItem('activeTab', selectedTab);
 
-                // Hide all products
-                tabContents.forEach((content) => content.classList.remove('active'));
-
-                // Add 'active' class to the clicked button
-                button.classList.add('active');
-
-                // Show products matching the selected tab
-                document.querySelectorAll(`.${selectedTab}`).forEach((product) => {
-                    product.classList.add('active');
-                });
+                // Activate the selected tab
+                activateTab(selectedTab);
             });
         });
 
-        // Trigger the first tab on page load
-        document.querySelector('.tab-btn').click();
+        // On page load, check if there's an active tab saved in localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTab = localStorage.getItem('activeTab') || 'ar'; // Default to 'ar' (or any tab you prefer)
+            activateTab(savedTab);
+        });
 
         // --------Add Product Form
         // Open Add Product Modal
