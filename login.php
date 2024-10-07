@@ -29,8 +29,9 @@ if (isset($_POST['login'])) {
         if (password_verify($password, $row['password'])) {
             // Set session variables
             $_SESSION['email'] = $row['email'];
-            $_SESSION['role'] = $row['role']; // Make sure to set the role
-            $_SESSION['username'] = $row['username']; // Optional: store the username
+            $_SESSION['role'] = $row['role'];
+            $_SESSION['username'] = $row['username']; 
+            $_SESSION['user_id'] = $row['id'];
 
             // Redirect to dashboard
             header("Location: dashboard.php");

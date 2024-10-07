@@ -103,11 +103,8 @@ form {
 
 .cart-drawer-closed {
     transform: translateX(100%);
-    visibility: hidden;
-    z-index: -1;
 }
 
 .cart-drawer-open {
     transform: translateX(0%);
-    z-index: 100;
 }

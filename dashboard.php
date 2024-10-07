@@ -75,6 +75,18 @@ $conn->close();
             <div class="column">
                 <h1 class="text-white text-5xl mb-[30px] font-bold">SHOP</h1>
 
+                <!-- Sorting Dropdown -->
+                <div class="mb-4">
+                    <label for="sort" class="text-white">Sort by:</label>
+                    <select id="sort" class="p-2 bg-gray-700 text-white">
+                        <option value="default">Default</option>
+                        <option value="name_asc">Name (A to Z)</option>
+                        <option value="name_desc">Name (Z to A)</option>
+                        <option value="price_asc">Price (Low to High)</option>
+                        <option value="price_desc">Price (High to Low)</option>
+                    </select>
+                </div>
+
                 <!-- Tabs -->
                 <div class="tabs mb-8">
                     <button class="tab-btn font-medium bg-bg-color text-white px-8 py-2 hover:bg-white hover:text-black" data-tab="ar">ASSAULT RIFLE</button>
@@ -86,9 +98,9 @@ $conn->close();
                 </div>
 
                 <!-- Product Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     <?php foreach ($products as $product): ?>
-                        <div class="product-item tab-content <?php echo htmlspecialchars($product['type']); ?> bg-bg-color shadow-md rounded-lg overflow-hidden">
+                        <div class="product-item tab-content <?php echo htmlspecialchars($product['type']); ?> bg-bg-color shadow-md rounded-lg overflow-hidden" data-name="<?php echo htmlspecialchars($product['name']); ?>" data-price="<?php echo $product['price']; ?>" data-id="<?php echo $product['id']; ?>">
                             <img src="./assets/<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" class="w-full h-48 object-contain hover:scale-125">
                             <div class="p-4">
                                 <?php if ($role === 'admin'): ?>
@@ -185,6 +197,39 @@ $conn->close();
             const savedTab = localStorage.getItem('activeTab') || 'ar'; // Default to 'ar' (or any tab you prefer)
             activateTab(savedTab);
         });
+
+        // Sorting functionality
+        const sortSelect = document.getElementById('sort');
+        sortSelect.addEventListener('change', () => {
+            const sortOption = sortSelect.value;
+            sortProducts(sortOption);
+        });
+
+        function sortProducts(option) {
+            const productGrid = document.getElementById('productGrid');
+            const products = Array.from(productGrid.querySelectorAll('.product-item'));
+
+            // Sort logic based on the selected option
+            let sortedProducts;
+            if (option === 'default') {
+                sortedProducts = products.sort((a, b) => parseFloat(a.getAttribute('data-id')) - parseFloat(b.getAttribute('data-id')));
+            } else if (option === 'name_asc') {
+                sortedProducts = products.sort((a, b) => a.getAttribute('data-name').localeCompare(b.getAttribute('data-name')));
+            } else if (option === 'name_desc') {
+                sortedProducts = products.sort((a, b) => b.getAttribute('data-name').localeCompare(a.getAttribute('data-name')));
+            } else if (option === 'price_asc') {
+                sortedProducts = products.sort((a, b) => parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price')));
+            } else if (option === 'price_desc') {
+                sortedProducts = products.sort((a, b) => parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price')));
+            }
+
+            // Re-arrange sorted products in the grid
+            if (sortedProducts) {
+                sortedProducts.forEach(product => {
+                    productGrid.appendChild(product);
+                });
+            }
+        }
 
         // --------Add Product Form
         // Open Add Product Modal
